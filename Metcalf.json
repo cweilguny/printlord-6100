@@ -1,0 +1,39 @@
+{
+  "command": "openscad",
+  "maxWorkers": 8,
+  "sets": {
+    "print_orientation": [true]
+  },
+  "tasks": {
+    "mount-plate": {
+      "title": "Mount Plate",
+      "run": ["print_orientation"],
+      "commandArgs": [
+        "-o", "stl/Printlord 6100 Mount Plate.stl",
+        "-D", "PRINT_ORIENTATION=@print_orientation@",
+        "scad/Printlord 6100 Mount Plate.scad"
+      ],
+      "createDirs": ["stl"]
+    },
+    "brace": {
+      "title": "Brace",
+      "run": ["print_orientation"],
+      "commandArgs": [
+        "-o", "stl/Printlord 6100 Brace.stl",
+        "-D", "PRINT_ORIENTATION=@print_orientation@",
+        "scad/Printlord 6100 Brace.scad"
+      ],
+      "createDirs": ["stl"]
+    },
+    "part-fan-duct": {
+      "title": "Part Fan Duct",
+      "run": ["print_orientation"],
+      "commandArgs": [
+        "-o", "stl/Printlord 6100 Part Fan Duct.stl",
+        "-D", "PRINT_ORIENTATION=@print_orientation@",
+        "scad/Printlord 6100 Part Fan Duct.scad"
+      ],
+      "createDirs": ["stl"]
+    }
+  }
+}

@@ -48,7 +48,8 @@ module body() {
             rounded_cube([MOUNT_WIDTH, BRACE_DEPTH + ROUNDING_RADIUS, BRACKET_HEIGHT], ROUNDING_RADIUS);
         translate([- MOUNT_WIDTH / 2, - ROUNDING_RADIUS, 0])
             cube([MOUNT_WIDTH, ROUNDING_RADIUS, BRACKET_HEIGHT]);
-        bracket_half();
+        translate([0, - BRACKET_HALF_TIGHTENING_TOLERANCE, 0])
+            bracket_half();
     }
     part_fan_duct_mounts();
 }

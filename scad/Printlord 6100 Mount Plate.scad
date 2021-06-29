@@ -47,7 +47,6 @@ module main() {
             heatsink_fan_duct_channel();
             heatsink_fan_duct_screw_holes();
             cr10_mountplate_screw_cutouts();
-            cable_guide();
         }
 }
 
@@ -84,21 +83,24 @@ module bracket_head() {
                 rounded_cube([MOUNT_WIDTH, PLATE_TO_NOZZLE_TIP + ROUNDING_RADIUS, BRACKET_HEIGHT], ROUNDING_RADIUS);
             translate([- MOUNT_WIDTH / 2, - ROUNDING_RADIUS, 0])
                 cube([MOUNT_WIDTH, ROUNDING_RADIUS, BRACKET_HEIGHT]);
-            bracket_half();
+            translate([0, - BRACKET_HALF_TIGHTENING_TOLERANCE, 0])
+                bracket_half();
         }
     }
 }
 
 module heatsink_fan_duct_channel() {
     xOffset = - MOUNT_WIDTH / 2;
-    yOffset = - HEATSINK_FAN_SIZE / 2 + PLATE_TO_NOZZLE_TIP - ROUNDING_RADIUS * 2;
+    yOffset = - HEATSINK_FAN_SIZE / 2 + PLATE_TO_NOZZLE_TIP - ROUNDING_RADIUS * 2 - 6;
     zOffset = HEATSINK_FAN_DUCT_Z_OFFSET;
     translate([xOffset, yOffset, zOffset])
         mirror([1, 0, 0])
             rotate([0, - 90, 0])
                 hull() {
-                    translate([0, HEATSINK_FAN_DUCT_MOUNTPLATE_Y_OFFSET, 0])
-                        cylinder(d = HEATSINK_FAN_DUCT_CHANNEL_DIAMETER, h = HEATSINK_FAN_MOUNTPLATE_WIDTH);
+                    translate([HEATSINK_FAN_SIZE / 2 + 0.01, HEATSINK_FAN_DUCT_MOUNTPLATE_Y_OFFSET, 0])
+                        rotate([0, - 30, 0])
+                            translate([- HEATSINK_FAN_SIZE / 2, 0, 0])
+                                cylinder(d = HEATSINK_FAN_DUCT_CHANNEL_DIAMETER, h = HEATSINK_FAN_MOUNTPLATE_WIDTH);
                     translate([HEATSINK_FAN_DUCT_BOTTOM_OFFSET, 0, HEATSINK_FAN_DUCT_LENGTH -
                             HEATSINK_FAN_MOUNTPLATE_WIDTH / 2])
                         cube([HEATSINK_FAN_SLOT_HEIGHT, HEATSINK_FAN_SLOT_WIDTH, HEATSINK_FAN_MOUNTPLATE_WIDTH], true);
@@ -106,28 +108,31 @@ module heatsink_fan_duct_channel() {
 }
 
 module heatsink_fan_duct_screw_holes() {
-    translate([0, HEATSINK_FAN_DUCT_MOUNTPLATE_Y_OFFSET - ROUNDING_RADIUS, HEATSINK_FAN_DUCT_MOUNTPLATE_XZ_OFFSET -
-            HEATSINK_FAN_DUCT_SCREW_HOLE_INSET / 2 + ROUNDING_RADIUS]) {
-        t = HEATSINK_FAN_SIZE / 2 - HEATSINK_FAN_DUCT_SCREW_HOLE_INSET;
-        translate([0, t, t])
-            heatsink_fan_duct_screw_hole(0.9);
-        translate([0, t, - t])
-            heatsink_fan_duct_screw_hole(2);
-        translate([0, - t, - t])
-            heatsink_fan_duct_screw_hole(2);
-        translate([0, - t, t])
-            heatsink_fan_duct_screw_hole(2);
-    }
+    xOffset = - (MOUNT_WIDTH / 2 + RENDER_HELPER) - 1;
+    yOffset = - HEATSINK_FAN_SIZE / 2 + PLATE_TO_NOZZLE_TIP - ROUNDING_RADIUS - 6;
+    zOffset = HEATSINK_BOTTOM + HEATSINK_FAN_OUTLET_SIZE / 2 - 3;
+    translate([xOffset, yOffset, zOffset])
+        translate([0, 0, HEATSINK_FAN_SIZE / 2])
+            rotate([0, 30, 0])
+                translate([0, 0, - HEATSINK_FAN_SIZE / 2])
+                    translate([0, HEATSINK_FAN_DUCT_MOUNTPLATE_Y_OFFSET - ROUNDING_RADIUS, HEATSINK_FAN_DUCT_MOUNTPLATE_XZ_OFFSET -
+                            HEATSINK_FAN_DUCT_SCREW_HOLE_INSET / 2 + ROUNDING_RADIUS]) {
+                        t = HEATSINK_FAN_SIZE / 2 - HEATSINK_FAN_DUCT_SCREW_HOLE_INSET;
+                        translate([0, t, t])
+                            heatsink_fan_duct_screw_hole(0.9);
+                        translate([0, t, - t])
+                            heatsink_fan_duct_screw_hole(2);
+                        translate([0, - t, - t])
+                            heatsink_fan_duct_screw_hole(2);
+                        translate([0, - t, t])
+                            heatsink_fan_duct_screw_hole(2);
+                    }
 }
 
 module heatsink_fan_duct_screw_hole(lengthFactor) {
-    xOffset = - (MOUNT_WIDTH / 2 + RENDER_HELPER);
-    yOffset = - HEATSINK_FAN_SIZE / 2 + PLATE_TO_NOZZLE_TIP - ROUNDING_RADIUS;
-    zOffset = HEATSINK_BOTTOM + HEATSINK_FAN_OUTLET_SIZE / 2 - 3;
-    translate([xOffset, yOffset, zOffset])
-        rotate([0, 90, 0])
-            cylinder(d = HEATSINK_FAN_DUCT_SCREW_HOLE_DIAMETER, h = HEATSINK_FAN_DUCT_SCREW_HOLE_LENGTH * lengthFactor +
-                RENDER_HELPER);
+    rotate([0, 90, 0])
+        cylinder(d = HEATSINK_FAN_DUCT_SCREW_HOLE_DIAMETER, h = HEATSINK_FAN_DUCT_SCREW_HOLE_LENGTH +
+            RENDER_HELPER);
 }
 
 module bracket_screw_holes() {
@@ -168,7 +173,7 @@ module heatsink_plate() {
                 rounded_cube([HEATSINK_PLATE_FRONT_WIDTH, ROUNDING_RADIUS, HEATSINK_PLATE_HEIGHT],
                 ROUNDING_RADIUS);
         }
-        translate([0, 0, HEATSINK_PLATE_BOTTOM])
+        translate([0, PLATE_TO_NOZZLE_TIP - HEATSINK_BOTTOM_DIAMETER + HEATSINK_BOTTOM_TOLERANCE, HEATSINK_PLATE_BOTTOM])
             cylinder($fn = 50, d = HEATSINK_BOTTOM_DIAMETER + HEATSINK_BOTTOM_TOLERANCE, h = HEATSINK_PLATE_HEIGHT);
     }
 }
@@ -182,9 +187,4 @@ module cr10_mountplate_screw_cutouts() {
         CR10_MOUNTPLATE_SCREW_CUTOUT_Y_OFFSET])
         rotate([90, 0, 0])
             cylinder(d = CR10_MOUNTPLATE_SCREW_CUTOUT_DIAMETER, h = CR10_MOUNTPLATE_SCREW_CUTOUT_HEIGHT);
-}
-
-module cable_guide() {
-    translate([MOUNT_WIDTH / 2 - CABLE_GUIDE_WIDTH / 2, CABLE_GUIDE_DEPTH / 2 + CABLE_GUIDE_INSET, MOUNT_FOOT_HEIGHT + CABLE_GUIDE_HEIGHT / 2])
-        cube([CABLE_GUIDE_WIDTH + ROUNDING_RADIUS, CABLE_GUIDE_DEPTH, CABLE_GUIDE_HEIGHT], center = true);
 }

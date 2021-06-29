@@ -50,10 +50,12 @@ module heatsink_fan_duct_body() {
         mirror([1, 0, 0])
             rotate([0, - 90, 0])
                 hull() {
-                    translate([0, HEATSINK_FAN_SIZE_MOUNTHELPER / 2, 0])
-                        linear_extrude(HEATSINK_FAN_MOUNTPLATE_WIDTH)
-                            rounded_square([HEATSINK_FAN_SIZE, HEATSINK_FAN_SIZE + HEATSINK_FAN_SIZE_MOUNTHELPER],
-                            HEATSINK_FAN_MOUNTPLATE_ROUNDING_RADIUS);
+                    translate([HEATSINK_FAN_SIZE / 2, 0, 0])
+                        rotate([0, - 30, 0])
+                            translate([- HEATSINK_FAN_SIZE / 2, 0, 0])
+                                linear_extrude(HEATSINK_FAN_MOUNTPLATE_WIDTH)
+                                    rounded_square([HEATSINK_FAN_SIZE, HEATSINK_FAN_SIZE],
+                                    HEATSINK_FAN_MOUNTPLATE_ROUNDING_RADIUS);
                     translate([0, 0, MOUNT_WIDTH / 2 - HEATSINK_BOTTOM_RADIUS - HEATSINK_FAN_MOUNTPLATE_WIDTH])
                         linear_extrude(HEATSINK_FAN_MOUNTPLATE_WIDTH)
                             rounded_square([HEATSINK_FAN_OUTLET_SIZE, HEATSINK_FAN_OUTLET_SIZE],

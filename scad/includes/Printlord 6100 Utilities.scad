@@ -46,7 +46,7 @@ module heatsink_fan_duct_body() {
     xOffset = - MOUNT_WIDTH / 2;
     yOffset = HEATSINK_FAN_DUCT_MOUNTPLATE_Y_OFFSET;
     zOffset = HEATSINK_FAN_DUCT_Z_OFFSET;
-    translate([xOffset, yOffset, zOffset])
+    translate([xOffset, yOffset - 7, zOffset])
         mirror([1, 0, 0])
             rotate([0, - 90, 0])
                 hull() {
